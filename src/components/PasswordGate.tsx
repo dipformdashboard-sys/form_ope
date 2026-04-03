@@ -1,23 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Lock, Shield } from "lucide-react";
+import { Lock, Shield, LogOut } from "lucide-react";
 import logoPcba from "@/assets/logo-pcba.png";
 
 const ACCESS_PASSWORD = "pcba2024";
+const SESSION_KEY = "pcba_auth";
 
 interface PasswordGateProps {
   children: React.ReactNode;
 }
 
 const PasswordGate = ({ children }: PasswordGateProps) => {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(
+    () => sessionStorage.getItem(SESSION_KEY) === "true"
+  );
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ACCESS_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, "true");
       setAuthenticated(true);
       setError("");
     } else {
@@ -26,7 +30,19 @@ const PasswordGate = ({ children }: PasswordGateProps) => {
     }
   };
 
-  if (authenticated) return <>{children}</>;
+  const handleLogout = () => {
+    sessionStorage.removeItem(SESSION_KEY);
+    setAuthenticated(false);
+    setPassword("");
+  };
+
+  if (authenticated) {
+    return (
+      <LogoutContext.Provider value={handleLogout}>
+        {children}
+      </LogoutContext.Provider>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-primary">
@@ -67,5 +83,10 @@ const PasswordGate = ({ children }: PasswordGateProps) => {
     </div>
   );
 };
+
+// Context to share logout function
+import { createContext, useContext } from "react";
+const LogoutContext = createContext<(() => void) | null>(null);
+export const useLogout = () => useContext(LogoutContext);
 
 export default PasswordGate;
