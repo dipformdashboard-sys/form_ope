@@ -27,6 +27,7 @@ export interface AtividadePayload {
   observacao: string;
   responsavel: string;
   participantes: string;
+  data: string;
 }
 
 export async function submitAtividade(data: AtividadePayload): Promise<{ status: string }> {
