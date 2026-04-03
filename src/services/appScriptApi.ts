@@ -30,7 +30,7 @@ export interface AtividadePayload {
 }
 
 export async function submitAtividade(data: AtividadePayload): Promise<{ status: string }> {
-  const params = new URLSearchParams(data as Record<string, string>);
+  const params = new URLSearchParams(data as unknown as Record<string, string>);
   const res = await fetch(`${API_URL}?${params.toString()}`, {
     method: "POST",
     headers: { "Content-Type": "text/plain" },
