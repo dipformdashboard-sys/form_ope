@@ -465,7 +465,7 @@ const DashboardContent = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={lotacaoData}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                      <XAxis dataKey="name" tick={{ fontSize: 9, angle: -20 }} height={60} />
+                      <XAxis dataKey="name" tick={{ fontSize: 9 }} height={60} />
                       <YAxis tick={{ fontSize: 11 }} />
                       <Tooltip />
                       <Bar dataKey="value" fill="hsl(43,75%,50%)" radius={[4, 4, 0, 0]} />
