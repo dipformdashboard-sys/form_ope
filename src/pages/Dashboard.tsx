@@ -419,17 +419,28 @@ const DashboardContent = () => {
                 <CardTitle className="text-sm font-medium text-muted-foreground">Por Canal</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={canalData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}>
-                        {canalData.map((_, i) => (
-                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                <div className="h-72 flex flex-col sm:flex-row items-center">
+                  <div className="w-full sm:w-1/2 h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={canalData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80}>
+                          {canalData.map((_, i) => (
+                            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="w-full sm:w-1/2 flex flex-wrap gap-2 justify-center sm:justify-start px-2">
+                    {canalData.map((entry, i) => (
+                      <div key={entry.name} className="flex items-center gap-1.5 text-xs text-foreground">
+                        <span className="inline-block h-3 w-3 rounded-sm flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                        <span className="truncate max-w-[140px]">{entry.name}</span>
+                        <span className="text-muted-foreground">({entry.value})</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </CardContent>
             </Card>
