@@ -203,18 +203,17 @@ const DashboardContent = () => {
         logging: false,
         windowWidth: dashRef.current.scrollWidth,
       });
-      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       const pdfW = pdf.internal.pageSize.getWidth();
       const pdfH = pdf.internal.pageSize.getHeight();
+      const margin = 8;
+      const usableW = pdfW - margin * 2;
+      const usableH = pdfH - margin * 2;
       const imgW = canvas.width;
       const imgH = canvas.height;
-      const ratio = Math.min(pdfW / imgW, pdfH / imgH);
-      const w = imgW * ratio;
-      const h = imgH * ratio;
+      const scale = usableW / imgW;
+      const pageHeightPx = usableH / scale;
 
-      // If content is taller than one page, split
-      const pageHeightPx = (pdfH / ratio);
       let yOffset = 0;
       let pageNum = 0;
       while (yOffset < imgH) {
@@ -226,11 +225,11 @@ const DashboardContent = () => {
         const ctx = sliceCanvas.getContext("2d")!;
         ctx.drawImage(canvas, 0, yOffset, imgW, sliceH, 0, 0, imgW, sliceH);
         const sliceImg = sliceCanvas.toDataURL("image/png");
-        pdf.addImage(sliceImg, "PNG", 0, 0, pdfW, sliceH * ratio);
+        pdf.addImage(sliceImg, "PNG", margin, margin, usableW, sliceH * scale);
         yOffset += sliceH;
         pageNum++;
       }
-      pdf.save("dashboard-relatorio.pdf");
+      pdf.save("sumario-atividades-nap.pdf");
     } catch (e) {
       console.error("Erro ao exportar PDF:", e);
     } finally {
@@ -261,25 +260,25 @@ const DashboardContent = () => {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <img src={logoPcba} alt="Logo PCBA" className="h-12 w-auto" />
-            <div>
-              <h1 className="text-lg font-bold font-heading tracking-tight sm:text-xl">Dashboard</h1>
-              <p className="text-xs text-primary-foreground/70">Polícia Civil da Bahia</p>
+             <div>
+              <h1 className="text-lg font-bold font-heading tracking-tight sm:text-xl">Sumário de Atividades</h1>
+              <p className="text-xs text-primary-foreground/70">Núcleo de Assuntos Prisionais (NAP)</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting}
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button size="sm" onClick={handleExport} disabled={exporting}
+              className="bg-accent text-accent-foreground hover:bg-accent/80 font-semibold shadow-md">
               {exporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
               Exportar PDF
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate("/")}
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button size="sm" onClick={() => navigate("/")}
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/80 font-semibold shadow-md">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar
             </Button>
             {logout && (
-              <Button variant="outline" size="sm" onClick={logout}
-                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+              <Button size="sm" onClick={logout}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/80 font-semibold shadow-md">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
               </Button>
@@ -420,17 +419,28 @@ const DashboardContent = () => {
                 <CardTitle className="text-sm font-medium text-muted-foreground">Por Canal</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={canalData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}>
-                        {canalData.map((_, i) => (
-                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                <div className="h-72 flex flex-col sm:flex-row items-center">
+                  <div className="w-full sm:w-1/2 h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={canalData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80}>
+                          {canalData.map((_, i) => (
+                            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="w-full sm:w-1/2 flex flex-wrap gap-2 justify-center sm:justify-start px-2">
+                    {canalData.map((entry, i) => (
+                      <div key={entry.name} className="flex items-center gap-1.5 text-xs text-foreground">
+                        <span className="inline-block h-3 w-3 rounded-sm flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                        <span className="truncate max-w-[140px]">{entry.name}</span>
+                        <span className="text-muted-foreground">({entry.value})</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </CardContent>
             </Card>
