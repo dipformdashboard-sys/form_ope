@@ -266,19 +266,19 @@ const DashboardContent = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting}
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button size="sm" onClick={handleExport} disabled={exporting}
+              className="bg-accent text-accent-foreground hover:bg-accent/80 font-semibold shadow-md">
               {exporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
               Exportar PDF
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate("/")}
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button size="sm" onClick={() => navigate("/")}
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/80 font-semibold shadow-md">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar
             </Button>
             {logout && (
-              <Button variant="outline" size="sm" onClick={logout}
-                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+              <Button size="sm" onClick={logout}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/80 font-semibold shadow-md">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
               </Button>
