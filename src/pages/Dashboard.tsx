@@ -203,18 +203,17 @@ const DashboardContent = () => {
         logging: false,
         windowWidth: dashRef.current.scrollWidth,
       });
-      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       const pdfW = pdf.internal.pageSize.getWidth();
       const pdfH = pdf.internal.pageSize.getHeight();
+      const margin = 8;
+      const usableW = pdfW - margin * 2;
+      const usableH = pdfH - margin * 2;
       const imgW = canvas.width;
       const imgH = canvas.height;
-      const ratio = Math.min(pdfW / imgW, pdfH / imgH);
-      const w = imgW * ratio;
-      const h = imgH * ratio;
+      const scale = usableW / imgW;
+      const pageHeightPx = usableH / scale;
 
-      // If content is taller than one page, split
-      const pageHeightPx = (pdfH / ratio);
       let yOffset = 0;
       let pageNum = 0;
       while (yOffset < imgH) {
@@ -226,11 +225,11 @@ const DashboardContent = () => {
         const ctx = sliceCanvas.getContext("2d")!;
         ctx.drawImage(canvas, 0, yOffset, imgW, sliceH, 0, 0, imgW, sliceH);
         const sliceImg = sliceCanvas.toDataURL("image/png");
-        pdf.addImage(sliceImg, "PNG", 0, 0, pdfW, sliceH * ratio);
+        pdf.addImage(sliceImg, "PNG", margin, margin, usableW, sliceH * scale);
         yOffset += sliceH;
         pageNum++;
       }
-      pdf.save("dashboard-relatorio.pdf");
+      pdf.save("sumario-atividades-nap.pdf");
     } catch (e) {
       console.error("Erro ao exportar PDF:", e);
     } finally {
