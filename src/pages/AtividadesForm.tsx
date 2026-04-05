@@ -120,12 +120,12 @@ const AtividadesForm = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => navigate("/dashboard")} className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button size="sm" onClick={() => navigate("/dashboard")} className="bg-accent text-accent-foreground hover:bg-accent/80 font-semibold shadow-md">
               <LayoutDashboard className="mr-2 h-4 w-4" />
-              Dashboard
+              Sumário
             </Button>
             {logout && (
-              <Button variant="outline" size="sm" onClick={logout} className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+              <Button size="sm" onClick={logout} className="bg-destructive text-destructive-foreground hover:bg-destructive/80 font-semibold shadow-md">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
               </Button>
