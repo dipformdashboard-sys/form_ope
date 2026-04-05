@@ -260,9 +260,9 @@ const DashboardContent = () => {
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-3 sm:px-6">
           <div className="flex items-center gap-3">
             <img src={logoPcba} alt="Logo PCBA" className="h-12 w-auto" />
-            <div>
-              <h1 className="text-lg font-bold font-heading tracking-tight sm:text-xl">Dashboard</h1>
-              <p className="text-xs text-primary-foreground/70">Polícia Civil da Bahia</p>
+             <div>
+              <h1 className="text-lg font-bold font-heading tracking-tight sm:text-xl">Sumário de Atividades</h1>
+              <p className="text-xs text-primary-foreground/70">Núcleo de Assuntos Prisionais (NAP)</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
